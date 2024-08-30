@@ -14,6 +14,7 @@ import trier.jovemdev.provaum.guilherme_monteiro.entity.ReservaEntity;
 import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReserva;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CancelamentoInvalidoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ClienteInexistenteException;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ConclusaoInvalidaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.DataInvalidaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.MesaReservadaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NumeroMesaInvalidoException;
@@ -65,7 +66,7 @@ public class ReservaServiceImpl implements ReservaService {
 	}
 
 	public ReservaDto updateStatus(Long idReserva, StatusReserva status)
-			throws ReservaInexistenteException, CancelamentoInvalidoException {
+			throws ReservaInexistenteException, CancelamentoInvalidoException, ConclusaoInvalidaException {
 
 		Optional<ReservaEntity> reservaOptional = repository.findById(idReserva);
 
@@ -75,6 +76,10 @@ public class ReservaServiceImpl implements ReservaService {
 
 		if (status.equals(StatusReserva.CANCELADA)) {
 			validaCancelamento(reservaOptional.get().getDataReserva());
+		}
+		
+		if (status.equals(StatusReserva.CONCLUIDA)) {
+			validaConcluida(reservaOptional.get().getDataReserva());
 		}
 
 		reservaOptional.get().atualizarStatus(status);
@@ -111,6 +116,12 @@ public class ReservaServiceImpl implements ReservaService {
 	private void validaCancelamento(LocalDate dataReserva) throws CancelamentoInvalidoException {
 		if (dataReserva.isBefore(LocalDate.now()) || dataReserva.isEqual(LocalDate.now())) {
 			throw new CancelamentoInvalidoException();
+		}
+	}
+	
+	private void validaConcluida(LocalDate dataReserva) throws ConclusaoInvalidaException {
+		if (dataReserva.isBefore(LocalDate.now())) {
+			throw new ConclusaoInvalidaException();
 		}
 	}
 }

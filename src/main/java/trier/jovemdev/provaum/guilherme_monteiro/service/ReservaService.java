@@ -7,6 +7,7 @@ import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
 import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReserva;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CancelamentoInvalidoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ClienteInexistenteException;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ConclusaoInvalidaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.DataInvalidaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.MesaReservadaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NumeroMesaInvalidoException;
@@ -25,5 +26,5 @@ public interface ReservaService {
 	void findDisponibility(Integer numeroMesa, LocalDate dataReserva)
 			throws DataInvalidaException, MesaReservadaException, NumeroMesaInvalidoException;
 
-	ReservaDto updateStatus(Long idReserva, StatusReserva status) throws ReservaInexistenteException, CancelamentoInvalidoException;
+	ReservaDto updateStatus(Long idReserva, StatusReserva status) throws ReservaInexistenteException, CancelamentoInvalidoException, ConclusaoInvalidaException;
 }
