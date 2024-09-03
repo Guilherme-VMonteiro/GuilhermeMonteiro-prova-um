@@ -7,15 +7,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.superclasses.PessoaBaseDto;
+import trier.jovemdev.provaum.guilherme_monteiro.enums.CargoEnum;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClienteDto extends PessoaBaseDto{
+public class FuncionarioDto extends PessoaBaseDto{
 
 	private Long id;
-	private LocalDate dataCadastro;
-	private Integer quantidadeReservas;
-	private BigDecimal valorGasto; 
+	private CargoEnum cargo;
+	private LocalDate dataAdmisao;
+	private BigDecimal salario;
+	private Integer cargaHoraria; 
 	private RestauranteDto restaurante;
 }

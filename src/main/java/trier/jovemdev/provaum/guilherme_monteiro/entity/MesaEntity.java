@@ -1,7 +1,5 @@
 package trier.jovemdev.provaum.guilherme_monteiro.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -18,34 +16,28 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import trier.jovemdev.provaum.guilherme_monteiro.entity.superclasses.PessoaBaseEntity;
 
 @Entity
-@Table(name = "cliente")
+@Table(name = "mesa")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClienteEntity extends PessoaBaseEntity{
-
+public class MesaEntity {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "data_cadastro", nullable = false)
-	private LocalDate dataCadastro;
+	@Column(nullable = false)
+	private Integer numero;
 	
-	@Column(name = "quantidade_reservas")
-	private Integer quantidadeReservas;
-	
-	@Column(name = "valor_gasto", precision = 3)
-	private BigDecimal valorGasto; 
-	
-	private Boolean bloqueado;
+	@Column(name = "capacidade_pessoas", nullable = false)
+	private Integer capacidadePessoas;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	@JoinColumn(name = "restaurante_id", nullable = false)
 	private RestauranteEntity restaurante;
 	
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.DETACH)
+	@OneToMany(mappedBy = "mesa", cascade = CascadeType.DETACH)
 	private List<ReservaEntity> reservas;
 }

@@ -5,10 +5,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import trier.jovemdev.provaum.guilherme_monteiro.entity.ClienteEntity;
+import trier.jovemdev.provaum.guilherme_monteiro.entity.RestauranteEntity;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<ClienteEntity, Long> {
+public interface RestauranteRepository extends JpaRepository<RestauranteEntity, Long>{
 
-	Optional<ClienteEntity> findByEmail(String email);
+	Optional<RestauranteEntity> findByCnpj(String cnpj);
+
 }

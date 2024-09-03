@@ -2,50 +2,49 @@ package trier.jovemdev.provaum.guilherme_monteiro.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import trier.jovemdev.provaum.guilherme_monteiro.entity.superclasses.PessoaBaseEntity;
+import trier.jovemdev.provaum.guilherme_monteiro.enums.CargoEnum;
 
 @Entity
-@Table(name = "cliente")
+@Table(name = "funcionario")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClienteEntity extends PessoaBaseEntity{
+public class FuncionarioEntity extends PessoaBaseEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "data_cadastro", nullable = false)
-	private LocalDate dataCadastro;
+	@Enumerated(EnumType.ORDINAL)
+	private CargoEnum cargo;
 	
-	@Column(name = "quantidade_reservas")
-	private Integer quantidadeReservas;
+	@Column(name = "data_admisao")
+	private LocalDate dataAdmisao;
 	
-	@Column(name = "valor_gasto", precision = 3)
-	private BigDecimal valorGasto; 
+	@Column(precision = 3)
+	private BigDecimal salario;
 	
-	private Boolean bloqueado;
+	@Column(name = "carga_horaria")
+	private Integer cargaHoraria; 
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	@JoinColumn(name = "restaurante_id", nullable = false)
 	private RestauranteEntity restaurante;
-	
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.DETACH)
-	private List<ReservaEntity> reservas;
 }

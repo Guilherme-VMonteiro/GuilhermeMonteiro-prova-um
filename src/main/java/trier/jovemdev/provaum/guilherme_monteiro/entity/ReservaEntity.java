@@ -1,6 +1,7 @@
 package trier.jovemdev.provaum.guilherme_monteiro.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,12 +14,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
-import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReserva;
+import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReservaEnum;
 
 @Entity
 @Table(name = "reserva")
@@ -31,32 +32,25 @@ public class ReservaEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@JoinColumn(name = "cliente_id", nullable = false)
+	private ClienteEntity cliente;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@JoinColumn(name = "mesa_id", nullable = false)
+	private MesaEntity mesa;
+	
 	@Column(name = "data_reserva", nullable = false)
 	private LocalDate dataReserva;
-
-	@Column(name = "numero_pessoas", nullable = false, length = 10)
-	private Integer numeroPessoas;
-
-	@Column(name = "numero_mesa", nullable = false, length = 20)
-	private Integer numeroMesa;
-
-	@Enumerated(EnumType.ORDINAL)
-	private StatusReserva status;
-
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	@JoinColumn(name = "id_cliente", nullable = false)
-	private ClienteEntity cliente;
-
-	public ReservaEntity(ReservaDto reservaDto) {
-		this.id = reservaDto.getId();
-		this.dataReserva = reservaDto.getDataReserva();
-		this.numeroPessoas = reservaDto.getNumeroPessoas();
-		this.numeroMesa = reservaDto.getNumeroMesa();
-		this.status = reservaDto.getStatus();
-		this.cliente = new ClienteEntity(reservaDto.getCliente());
-	}
 	
-	public void atualizarStatus(StatusReserva status) {
-		this.status = status;
-	}
+	@Column(name = "quantidade_pessoas", nullable = false)
+	private Integer quantidadePessoas;
+	
+	@Enumerated(EnumType.ORDINAL)
+	private StatusReservaEnum status;
+	
+	private String observacao;
+	
+	@OneToMany(mappedBy = "reserva", cascade = CascadeType.DETACH)
+	private List<PedidoEntity> pedidos;
 }
