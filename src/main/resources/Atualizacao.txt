@@ -1,0 +1,93 @@
+ENTIDADES:
+
+- Cliente
+- Funcionário
+- Mesa
+- Pedido
+- Reserva
+- Restaurante
+
+ENDPOINTS:
+
+Cliente:
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+	Buscar clientes com mais reservas concluídas.
+	Buscar clientes com maior valor gasto.
+	Fazer busca paginada de clientes com busca por nome, trazendo numero de reservas concluídas e o total gasto com o restaurante.
+	Listar todos os clientes com seu maior pedido.
+	Fazer endpoint para desbloquear cliente (Pagou a taxa). [OK]
+Funcionário:
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+Mesa:	
+	Listar todos
+	Listar por id
+	Cadastro
+	Atualização
+	Deleção
+	Buscar mesas disponíveis (não canceladas) por data e quantidade de pessoas.
+Pedido:
+	Listar todos
+	Listar por id
+	Cadastro
+	Atualização
+	Deleção
+	Busca pedidos por data, valor, status e cliente (parâmetros opcionais) ordenados por valor desc.
+	Fazer busca de restaurantes e pedidos paginados (busca deve conter filtro por nome).
+Reserva:
+	Listar todos
+	Listar por id
+	Cadastro
+	Atualização
+	Deleção
+	Alterar status da Reserva
+	Buscar total por reservas.
+	Pesquisar pela observação na reserva.
+Restaurante:
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+	Buscar faturamento do dia por restaurante
+	Buscar o dia com mais faturamento do mês por restaurante. ( retorna data e dia da semana)
+
+REGRAS DE NEGOCIO:
+
+Cliente:
+	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
+	
+Funcionário:
+	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
+	A carga horária do funcionário não deve ultrapassar 220 horas. [OK]
+	Um funcionário diferente de Freelancer deve ter um salário cadastrado superior a um salário mínimo. [OK]
+Mesa:
+
+Pedido:
+	Uma reserva só pode ter um pedido adicionado caso a data da reserva seja posterior ou igual a hoje e seu status seja AGENDADA (ainda não foi finalizada).
+
+Reserva:
+	Uma reserva não pode ser feita para uma data no passado.
+	Fazer controle para se o cliente tiver cancelado 2 reservas no último mês ele não poder criar uma nova reserva.
+	Fazer bloqueio do cliente caso tenha 3 inadimplências (flg_bloqueado).
+	Uma reserva só pode ser cancelada com 1 dia de antecedência.
+	Uma reserva só pode ser concluída no dia mesmo dia ou posterior.
+	O sistema deve possuir um agendamento que roda todo dia as 6 da manhã que concluída reservas sem status preenchidos com observação padrão “Reserva finalizada automaticamente pelo sistema”. Preencher como concluida quando existirem pedidos para a reserva. Preencher como inadimplente quando não existirem.
+
+Restaurante:
+	Extrair números do cnpj e gravar sem caracteres especiais. [OK]
+
+-------------
+
+MELHORIAS:
+	ABSTRAIR PARA CODIGO REUTILIZAVEL A VERIFICACAO DOS ENUMS
+	ABSTRAIR PARA CODIGO REUTILIZAVEL A VALIDACAO DA IDADE DE CLIENTE E FUNCIONARIO
+
+	

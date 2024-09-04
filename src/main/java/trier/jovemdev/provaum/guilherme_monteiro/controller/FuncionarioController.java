@@ -12,44 +12,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import trier.jovemdev.provaum.guilherme_monteiro.dto.ClienteDto;
-import trier.jovemdev.provaum.guilherme_monteiro.service.ClienteService;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.FuncionarioDto;
+import trier.jovemdev.provaum.guilherme_monteiro.service.FuncionarioService;
 
 @RestController
-@RequestMapping("/cliente")
-public class ClienteController {
+@RequestMapping("/funcionario")
+public class FuncionarioController {
 
 	@Autowired
-	private ClienteService service;
+	private FuncionarioService service;
 
 	@GetMapping
-	public List<ClienteDto> findAll() {
+	public List<FuncionarioDto> findAll() {
 		return service.findAll();
 	}
 
 	@GetMapping("/{id}")
-	public ClienteDto findById(@PathVariable Long id) {
+	public FuncionarioDto findById(@PathVariable Long id) {
 		return service.findById(id);
 	}
 
 	@PostMapping
-	public ClienteDto create(@RequestBody ClienteDto ClienteDto) {
-		return service.create(ClienteDto);
+	public FuncionarioDto create(@RequestBody FuncionarioDto funcionarioDto) {
+		return service.create(funcionarioDto);
 	}
 
 	@PutMapping
-	public ClienteDto update(@RequestBody ClienteDto ClienteDto) {
-		return service.update(ClienteDto);
-	}
-	
-	@PutMapping("/desbloquear/{id}")
-	public void unblockCliente(@PathVariable Long id) {
-		service.unblockCliente(id);
+	public FuncionarioDto update(@RequestBody FuncionarioDto funcionarioDto) {
+		return service.update(funcionarioDto);
 	}
 
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-	
 }

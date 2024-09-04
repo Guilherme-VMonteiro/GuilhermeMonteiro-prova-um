@@ -7,11 +7,12 @@ import lombok.Getter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
-public class TipoDeComidaInvalidoException extends ExcessaoPersonalizada {
+public class SalarioFreelancerInvalidoException extends SalarioInvalidoException	 {
 
 	private static final long serialVersionUID = 1L;
 
-	public TipoDeComidaInvalidoException() {
-		super("Tipo de comida inválido.");
+	public SalarioFreelancerInvalidoException() {
+		super("Salário do freelancer inválido. O salário deve ser menor que um salário mínimo");
 	}
+
 }

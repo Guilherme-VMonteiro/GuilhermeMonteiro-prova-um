@@ -8,6 +8,7 @@ import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CnpjJaExistenteExcep
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NomeInvalidoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.QtdEstrelasInvalidoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.RestauranteNaoEncontradoException;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ValorInvalidoEnumException;
 
 public interface RestauranteService {
 
@@ -16,10 +17,10 @@ public interface RestauranteService {
 	RestauranteDto findById(Long id) throws RestauranteNaoEncontradoException;
 
 	RestauranteDto create(RestauranteDto restauranteDto)
-			throws CnpjJaExistenteException, CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException;
+			throws CnpjJaExistenteException, CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException, ValorInvalidoEnumException;
 
 	RestauranteDto update(RestauranteDto restauranteAtualizadoDto) throws RestauranteNaoEncontradoException,
-			CnpjJaExistenteException, CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException;
+			CnpjJaExistenteException, CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException, ValorInvalidoEnumException;
 
 	void delete(Long id) throws RestauranteNaoEncontradoException;
 }

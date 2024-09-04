@@ -34,6 +34,6 @@ public class PedidoEntity {
 	@Column(name = "descricao", nullable = false)
 	private String descricao;
 
-	@Column(nullable = false, precision = 3)
+	@Column(nullable = false)
 	private BigDecimal valor;
 }

@@ -13,6 +13,7 @@ import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CnpjJaExistenteExcep
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NomeInvalidoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.QtdEstrelasInvalidoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.RestauranteNaoEncontradoException;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ValorInvalidoEnumException;
 import trier.jovemdev.provaum.guilherme_monteiro.repository.RestauranteRepository;
 import trier.jovemdev.provaum.guilherme_monteiro.service.RestauranteService;
 
@@ -33,8 +34,8 @@ public class RestauranteServiceImpl implements RestauranteService {
 	}
 
 	@Override
-	public RestauranteDto create(RestauranteDto restauranteDto)
-			throws CnpjJaExistenteException, CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException {
+	public RestauranteDto create(RestauranteDto restauranteDto) throws CnpjJaExistenteException, CnpjInvalidoException,
+			QtdEstrelasInvalidoException, NomeInvalidoException, ValorInvalidoEnumException {
 
 		validaCampos(restauranteDto);
 
@@ -44,8 +45,9 @@ public class RestauranteServiceImpl implements RestauranteService {
 	}
 
 	@Override
-	public RestauranteDto update(RestauranteDto restauranteAtualizadoDto) throws RestauranteNaoEncontradoException,
-			CnpjJaExistenteException, CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException {
+	public RestauranteDto update(RestauranteDto restauranteAtualizadoDto)
+			throws RestauranteNaoEncontradoException, CnpjJaExistenteException, CnpjInvalidoException,
+			QtdEstrelasInvalidoException, NomeInvalidoException, ValorInvalidoEnumException {
 
 		RestauranteEntity entity = new RestauranteEntity(findById(restauranteAtualizadoDto.getId()));
 
@@ -61,20 +63,30 @@ public class RestauranteServiceImpl implements RestauranteService {
 		repository.delete(new RestauranteEntity(findById(id)));
 	}
 
-	private void validaCampos(RestauranteDto restauranteDto)
-			throws CnpjJaExistenteException, CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException{
+	private RestauranteDto validaCampos(RestauranteDto restauranteDto) throws CnpjJaExistenteException,
+			CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException {
 		validaNome(restauranteDto.getNome());
 		validaCnpj(restauranteDto);
 		validaQtdEstrelas(restauranteDto.getEstrelas());
+
+		return restauranteDto;
 	}
 
 	private void validaCnpj(RestauranteDto restauranteDto) throws CnpjJaExistenteException, CnpjInvalidoException {
+
 		if (restauranteDto.getCnpj().length() != 14 || !restauranteDto.getCnpj().matches("^\\d+$")) {
-			throw new CnpjInvalidoException(restauranteDto.getCnpj());
+			if (restauranteDto.getCnpj().length() != 18
+					|| !restauranteDto.getCnpj().matches("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$")) {
+				throw new CnpjInvalidoException(restauranteDto.getCnpj());
+			}
 		}
 		
+		if (restauranteDto.getCnpj().length() == 18) {
+			restauranteDto.setCnpj(restauranteDto.getCnpj().replace(".", "").replace("/", "").replace("-", ""));
+		}
+
 		Optional<RestauranteEntity> optionalRestaurante = repository.findByCnpj(restauranteDto.getCnpj());
-		
+
 		if (optionalRestaurante.isPresent() && optionalRestaurante.get().getId() != restauranteDto.getId()) {
 			throw new CnpjJaExistenteException(restauranteDto.getCnpj());
 		}
@@ -85,9 +97,9 @@ public class RestauranteServiceImpl implements RestauranteService {
 			throw new QtdEstrelasInvalidoException();
 		}
 	}
-	
-	private void validaNome(String nome) throws NomeInvalidoException{
-		if(nome.isEmpty() || nome.isBlank()) {
+
+	private void validaNome(String nome) throws NomeInvalidoException {
+		if (nome.isEmpty() || nome.isBlank()) {
 			throw new NomeInvalidoException();
 		}
 	}

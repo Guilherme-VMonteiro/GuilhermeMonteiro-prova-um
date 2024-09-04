@@ -3,10 +3,12 @@ package trier.jovemdev.provaum.guilherme_monteiro.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import trier.jovemdev.provaum.guilherme_monteiro.entity.RestauranteEntity;
 import trier.jovemdev.provaum.guilherme_monteiro.enums.TipoComidaEnum;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestauranteDto {
