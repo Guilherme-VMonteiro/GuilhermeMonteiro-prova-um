@@ -2,6 +2,7 @@ package trier.jovemdev.provaum.guilherme_monteiro.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ClienteDto;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaTotalDto;
@@ -118,6 +119,15 @@ public class ReservaServiceImpl implements ReservaService {
 
     public List<ReservaDto> findByObservacao(String observacao) {
         return reservaRepositoryCustom.findByObervacao(observacao).stream().map(ReservaDto::new).toList();
+    }
+
+    @Transactional
+    public void concluirReservasNaoFinalizadas() {
+        List<ReservaDto> reservasSemPedidos = reservaRepositoryCustom.atualizarAutomaticamenteReservasParaInadimplente();
+        reservasSemPedidos.forEach(reserva -> updateStatus(reserva.getId(), StatusReservaEnum.INADIMPLENTE));
+
+        List<ReservaDto> reservasComPedidos = reservaRepositoryCustom.atualizarAutomaticamenteReservasParaConcluida();
+        reservasComPedidos.forEach(reserva -> updateStatus(reserva.getId(), StatusReservaEnum.CONCLUIDA));
     }
 
     private void validaDataReserva(LocalDate dataReserva) throws DataInvalidaException{

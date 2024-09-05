@@ -13,14 +13,23 @@ import trier.jovemdev.provaum.guilherme_monteiro.entity.ClienteEntity;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ClienteNaoEncontradoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.DataDeNascimentoInvalidaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NomeInvalidoException;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.RestauranteNaoEncontradoException;
 import trier.jovemdev.provaum.guilherme_monteiro.repository.ClienteRepository;
+import trier.jovemdev.provaum.guilherme_monteiro.repository.custom.ClienteRepositoryCustom;
+import trier.jovemdev.provaum.guilherme_monteiro.repository.custom.impl.ClienteRepositoryCustomImpl;
 import trier.jovemdev.provaum.guilherme_monteiro.service.ClienteService;
+import trier.jovemdev.provaum.guilherme_monteiro.service.RestauranteService;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
 	@Autowired
 	private ClienteRepository repository;
+
+	@Autowired
+	private RestauranteService restauranteService;
+    @Autowired
+    private ClienteRepositoryCustom clienteRepositoryCustom;
 
 	public List<ClienteDto> findAll() {
 		return repository.findAll().stream().map(ClienteDto::new).toList();
@@ -58,23 +67,25 @@ public class ClienteServiceImpl implements ClienteService {
 		repository.delete(new ClienteEntity(findById(id)));
 	}
 
-	public List<ClienteDto> findClientesWithMostReservas() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ClienteDto> findClientesWithMostReservas(Long idRestaurante) throws RestauranteNaoEncontradoException {
+		restauranteService.findById(idRestaurante);
+
+		return clienteRepositoryCustom.findClientesWithMostReservas();
 	}
 
-	public List<ClienteDto> findClientesWithMostValueSpent() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ClienteDto> findClientesWithMostValueSpent(Long idRestaurante) throws RestauranteNaoEncontradoException{
+		restauranteService.findById(idRestaurante);
+
+		return clienteRepositoryCustom.findClientesWithMostValueSpent();
 	}
 
 	// PAGINADO
-	public List<ClienteDto> findReservasConcluidasAndTotalSpentByName() throws NomeInvalidoException {
+	public List<ClienteDto> findReservasConcluidasAndTotalSpentByName(Long idRestaurante) throws NomeInvalidoException, RestauranteNaoEncontradoException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<ClienteDto> findAllWithOurBestPedido() {
+	public List<ClienteDto> findAllWithOurBestPedido(Long idRestaurante) throws RestauranteNaoEncontradoException{
 		// TODO Auto-generated method stub
 		return null;
 	}

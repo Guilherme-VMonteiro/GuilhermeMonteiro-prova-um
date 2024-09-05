@@ -6,6 +6,7 @@ import trier.jovemdev.provaum.guilherme_monteiro.dto.ClienteDto;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ClienteNaoEncontradoException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.DataDeNascimentoInvalidaException;
 import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NomeInvalidoException;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.RestauranteNaoEncontradoException;
 
 public interface ClienteService {
 
@@ -19,14 +20,14 @@ public interface ClienteService {
 	
 	void delete(Long id) throws ClienteNaoEncontradoException;
 	
-	List<ClienteDto> findClientesWithMostReservas();
+	List<ClienteDto> findClientesWithMostReservas(Long idRestaurante) throws RestauranteNaoEncontradoException;
 	
-	List<ClienteDto> findClientesWithMostValueSpent();
+	List<ClienteDto> findClientesWithMostValueSpent(Long idRestaurante) throws RestauranteNaoEncontradoException;
 	
 	//PAGINADO
-	List<ClienteDto> findReservasConcluidasAndTotalSpentByName() throws NomeInvalidoException;
+	List<ClienteDto> findReservasConcluidasAndTotalSpentByName(Long idRestaurante) throws NomeInvalidoException, RestauranteNaoEncontradoException;
 	
-	List<ClienteDto> findAllWithOurBestPedido();
+	List<ClienteDto> findAllWithOurBestPedido(Long idRestaurante) throws RestauranteNaoEncontradoException;
 	
 	void switchBlockClienteFlag(Long id) throws ClienteNaoEncontradoException;
 	

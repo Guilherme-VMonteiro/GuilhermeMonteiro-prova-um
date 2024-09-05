@@ -65,11 +65,6 @@ public class ReservaEntity {
 		this.quantidadePessoas = reservaDto.getQuantidadePessoas();
 		this.status = reservaDto.getStatus();
 		this.observacao = reservaDto.getObservacao();
-		if(Objects.nonNull(reservaDto.getPedidos())) {
-			this.pedidos = reservaDto.getPedidos().stream().map(PedidoEntity::new).toList();
-		}else{
-			this.pedidos = new ArrayList<>();
-		}
     }
 
 	public void atualizaCampos(ReservaDto reservaDto){

@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.PedidoDto;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
 
 @Entity
 @Table(name = "pedido")
@@ -40,6 +41,12 @@ public class PedidoEntity {
 
     public PedidoEntity(PedidoDto pedidoDto) {
 		this.id = pedidoDto.getId();
+		this.reserva = new ReservaEntity(pedidoDto.getReserva());
+		this.descricao = pedidoDto.getDescricao();
+		this.valor = pedidoDto.getValor();
+    }
+
+    public void atualizaCampos(PedidoDto pedidoDto) {
 		this.reserva = new ReservaEntity(pedidoDto.getReserva());
 		this.descricao = pedidoDto.getDescricao();
 		this.valor = pedidoDto.getValor();

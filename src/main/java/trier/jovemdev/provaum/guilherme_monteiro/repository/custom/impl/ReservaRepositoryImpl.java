@@ -92,4 +92,32 @@ public class ReservaRepositoryImpl implements ReservaRepositoryCustom {
 
         return query.fetch();
     }
+
+    public List<ReservaDto> atualizarAutomaticamenteReservasParaInadimplente() {
+
+        JPAQuery<ReservaDto> query = new JPAQuery<>(em);
+
+        query
+                .select(Projections.constructor(ReservaDto.class, reserva))
+                .from(reserva)
+                .leftJoin(reserva.pedidos, pedido)
+                .groupBy(reserva.id)
+                .having(pedido.reserva.id.count().eq(0L).and(reserva.dataReserva.lt(LocalDate.now())).and(reserva.status.eq(StatusReservaEnum.AGENDADA)));
+
+        return query.fetch();
+    }
+
+    public List<ReservaDto> atualizarAutomaticamenteReservasParaConcluida() {
+
+        JPAQuery<ReservaDto> query = new JPAQuery<>(em);
+
+        query
+                .select(Projections.constructor(ReservaDto.class, reserva))
+                .from(reserva)
+                .leftJoin(reserva.pedidos, pedido)
+                .groupBy(reserva.id)
+                .having(pedido.reserva.id.count().gt(0L).and(reserva.dataReserva.lt(LocalDate.now())).and(reserva.status.eq(StatusReservaEnum.AGENDADA)));
+
+        return query.fetch();
+    }
 }

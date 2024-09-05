@@ -102,4 +102,19 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorMessage> handleClienteBloqueadoException(ClienteBloqueadoException e) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
 	}
+
+	@ExceptionHandler(DescricaoInvalidaException.class)
+	public ResponseEntity<ErrorMessage> handleDescricaoInvalidaException(DescricaoInvalidaException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+	}
+
+	@ExceptionHandler(ReservaFinalizadaException.class)
+	public ResponseEntity<ErrorMessage> handleReservaFinalizadaException(ReservaFinalizadaException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+	}
+
+	@ExceptionHandler(PedidoNaoEncontradoException.class)
+	public ResponseEntity<ErrorMessage> handlePedidoNaoEncontradoException(PedidoNaoEncontradoException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorMessage());
+	}
 }

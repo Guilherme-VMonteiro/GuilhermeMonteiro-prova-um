@@ -18,4 +18,8 @@ public interface ReservaRepositoryCustom {
     List<ReservaTotalEntity> findAllReservasTotal();
 
     List<ReservaEntity> findByObervacao(String obervacao);
+
+    List<ReservaDto> atualizarAutomaticamenteReservasParaInadimplente();
+
+    List<ReservaDto> atualizarAutomaticamenteReservasParaConcluida();
 }

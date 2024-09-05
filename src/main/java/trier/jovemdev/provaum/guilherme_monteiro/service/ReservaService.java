@@ -29,6 +29,7 @@ public interface ReservaService {
 
     List<ReservaDto> findByObservacao(String observacao);
 
+    void concluirReservasNaoFinalizadas();
 
 
 }
