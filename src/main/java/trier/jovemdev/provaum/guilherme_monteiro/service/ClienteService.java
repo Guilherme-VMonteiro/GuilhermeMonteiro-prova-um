@@ -28,6 +28,6 @@ public interface ClienteService {
 	
 	List<ClienteDto> findAllWithOurBestPedido();
 	
-	void unblockCliente(Long id) throws ClienteNaoEncontradoException;
+	void switchBlockClienteFlag(Long id) throws ClienteNaoEncontradoException;
 	
 }

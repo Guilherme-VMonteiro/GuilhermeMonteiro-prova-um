@@ -11,9 +11,7 @@ public interface MesaService {
 	List<MesaDto> findAllByRestaurante(Long idRestaurante) throws RestauranteNaoEncontradoException;
 	
 	MesaDto findById(Long id) throws MesaNaoEncontradaException;
-	
-	MesaDto findByIdAndRestaurante(Long idMesa, Long idRestaurante) throws RestauranteNaoEncontradoException, MesaNaoEncontradaException;
-	
+
 	MesaDto create(MesaDto mesaDto) throws RestauranteNaoEncontradoException;
 	
 	MesaDto update(MesaDto mesaDto) throws RestauranteNaoEncontradoException, MesaNaoEncontradaException;

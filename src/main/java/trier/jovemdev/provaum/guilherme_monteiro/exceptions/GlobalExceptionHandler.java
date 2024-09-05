@@ -72,4 +72,34 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorMessage> handleMesaNaoEncontradaException(MesaNaoEncontradaException e) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorMessage());
 	}
+
+	@ExceptionHandler(ReservaNaoEncontradaException.class)
+	public ResponseEntity<ErrorMessage> handleReservaNaoEncontradaException(ReservaNaoEncontradaException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorMessage());
+	}
+
+	@ExceptionHandler(DataInvalidaException.class)
+	public ResponseEntity<ErrorMessage> handleDataInvalidaException(DataInvalidaException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+	}
+
+	@ExceptionHandler(ReservaBloqueadaException.class)
+	public ResponseEntity<ErrorMessage> handleReservaBloqueadaException(ReservaBloqueadaException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+	}
+
+	@ExceptionHandler(ConclusaoInvalidaException.class)
+	public ResponseEntity<ErrorMessage> handleConclusaoInvalidaException(ConclusaoInvalidaException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+	}
+
+	@ExceptionHandler(CancelamentoInvalidoException.class)
+	public ResponseEntity<ErrorMessage> handleCancelamentoInvalidoException(CancelamentoInvalidoException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+	}
+
+	@ExceptionHandler(ClienteBloqueadoException.class)
+	public ResponseEntity<ErrorMessage> handleClienteBloqueadoException(ClienteBloqueadoException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+	}
 }

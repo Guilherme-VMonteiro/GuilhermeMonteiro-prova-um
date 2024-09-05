@@ -42,9 +42,9 @@ public class ClienteController {
 		return service.update(ClienteDto);
 	}
 	
-	@PutMapping("/desbloquear/{id}")
-	public void unblockCliente(@PathVariable Long id) {
-		service.unblockCliente(id);
+	@PutMapping("/permissaoFlag/{id}")
+	public void switchBlockClienteFlag(@PathVariable Long id) {
+		service.switchBlockClienteFlag(id);
 	}
 
 	@DeleteMapping("/{id}")

@@ -1,7 +1,9 @@
 package trier.jovemdev.provaum.guilherme_monteiro.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,6 +21,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
 import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReservaEnum;
 
 @Entity
@@ -53,4 +56,28 @@ public class ReservaEntity {
 	
 	@OneToMany(mappedBy = "reserva", cascade = CascadeType.DETACH)
 	private List<PedidoEntity> pedidos;
+
+    public ReservaEntity(ReservaDto reservaDto) {
+		this.id = reservaDto.getId();
+		this.cliente = new ClienteEntity(reservaDto.getCliente());
+		this.mesa = new MesaEntity(reservaDto.getMesa());
+		this.dataReserva = reservaDto.getDataReserva();
+		this.quantidadePessoas = reservaDto.getQuantidadePessoas();
+		this.status = reservaDto.getStatus();
+		this.observacao = reservaDto.getObservacao();
+		if(Objects.nonNull(reservaDto.getPedidos())) {
+			this.pedidos = reservaDto.getPedidos().stream().map(PedidoEntity::new).toList();
+		}else{
+			this.pedidos = new ArrayList<>();
+		}
+    }
+
+	public void atualizaCampos(ReservaDto reservaDto){
+		this.cliente = new ClienteEntity(reservaDto.getCliente());
+		this.mesa = new MesaEntity(reservaDto.getMesa());
+		this.dataReserva = reservaDto.getDataReserva();
+		this.quantidadePessoas = reservaDto.getQuantidadePessoas();
+		this.status = reservaDto.getStatus();
+		this.observacao = reservaDto.getObservacao();
+	}
 }

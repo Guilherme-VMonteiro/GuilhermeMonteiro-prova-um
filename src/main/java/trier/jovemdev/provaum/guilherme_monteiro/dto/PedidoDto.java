@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import trier.jovemdev.provaum.guilherme_monteiro.entity.PedidoEntity;
 
 @Getter
 @NoArgsConstructor
@@ -15,4 +16,11 @@ public class PedidoDto {
 	private ReservaDto reserva;
 	private String descricao;
 	private BigDecimal valor;
+
+    public PedidoDto(PedidoEntity pedidoEntity) {
+		this.id = pedidoEntity.getId();
+		this.reserva = new ReservaDto(pedidoEntity.getReserva());
+		this.descricao = pedidoEntity.getDescricao();
+		this.valor = pedidoEntity.getValor();
+    }
 }

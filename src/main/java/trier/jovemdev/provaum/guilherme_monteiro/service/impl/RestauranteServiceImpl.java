@@ -1,6 +1,7 @@
 package trier.jovemdev.provaum.guilherme_monteiro.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,13 +64,11 @@ public class RestauranteServiceImpl implements RestauranteService {
 		repository.delete(new RestauranteEntity(findById(id)));
 	}
 
-	private RestauranteDto validaCampos(RestauranteDto restauranteDto) throws CnpjJaExistenteException,
+	private void validaCampos(RestauranteDto restauranteDto) throws CnpjJaExistenteException,
 			CnpjInvalidoException, QtdEstrelasInvalidoException, NomeInvalidoException {
 		validaNome(restauranteDto.getNome());
 		validaCnpj(restauranteDto);
 		validaQtdEstrelas(restauranteDto.getEstrelas());
-
-		return restauranteDto;
 	}
 
 	private void validaCnpj(RestauranteDto restauranteDto) throws CnpjJaExistenteException, CnpjInvalidoException {
@@ -87,7 +86,7 @@ public class RestauranteServiceImpl implements RestauranteService {
 
 		Optional<RestauranteEntity> optionalRestaurante = repository.findByCnpj(restauranteDto.getCnpj());
 
-		if (optionalRestaurante.isPresent() && optionalRestaurante.get().getId() != restauranteDto.getId()) {
+		if (optionalRestaurante.isPresent() && !Objects.equals(optionalRestaurante.get().getId(), restauranteDto.getId())) {
 			throw new CnpjJaExistenteException(restauranteDto.getCnpj());
 		}
 	}

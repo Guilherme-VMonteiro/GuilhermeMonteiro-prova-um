@@ -79,9 +79,9 @@ public class ClienteServiceImpl implements ClienteService {
 		return null;
 	}
 
-	public void unblockCliente(Long id) throws ClienteNaoEncontradoException {
+	public void switchBlockClienteFlag(Long id) throws ClienteNaoEncontradoException {
 		ClienteDto clienteDto = findById(id);
-		clienteDto.setBloqueado(false);
+		clienteDto.setBloqueado(!clienteDto.getBloqueado());
 		repository.save(new ClienteEntity(clienteDto));
 	}
 

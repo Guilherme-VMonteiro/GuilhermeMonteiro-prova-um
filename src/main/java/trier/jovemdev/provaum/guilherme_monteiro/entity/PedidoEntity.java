@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.PedidoDto;
 
 @Entity
 @Table(name = "pedido")
@@ -36,4 +37,11 @@ public class PedidoEntity {
 
 	@Column(nullable = false)
 	private BigDecimal valor;
+
+    public PedidoEntity(PedidoDto pedidoDto) {
+		this.id = pedidoDto.getId();
+		this.reserva = new ReservaEntity(pedidoDto.getReserva());
+		this.descricao = pedidoDto.getDescricao();
+		this.valor = pedidoDto.getValor();
+    }
 }
