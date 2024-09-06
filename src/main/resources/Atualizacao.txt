@@ -15,17 +15,12 @@ Cliente:
 	Cadastro [OK]
 	Atualização [OK]
 	Deleção [OK]
-	Buscar clientes com mais reservas concluídas.
-	Buscar clientes com maior valor gasto.
+	Buscar clientes com mais reservas concluídas. [OK]
+	Buscar clientes com maior valor gasto. [OK]
 	Fazer busca paginada de clientes com busca por nome, trazendo numero de reservas concluídas e o total gasto com o restaurante.
 	Listar todos os clientes com seu maior pedido.
 	Fazer endpoint para desbloquear cliente (Pagou a taxa). [OK]
-Funcionário:
-	Listar todos [OK]
-	Listar por id [OK]
-	Cadastro [OK]
-	Atualização [OK]
-	Deleção [OK]
+
 Mesa:	
 	Listar todos [OK]
 	Listar por id [OK]
@@ -59,23 +54,6 @@ Restaurante:
 	Buscar o dia com mais faturamento do mês por restaurante. ( retorna data e dia da semana)
 	Fazer busca de restaurantes e pedidos paginados (busca deve conter filtro por nome).
 
-REGRAS DE NEGOCIO:
-
-Cliente:
-	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
-	ATUALIZAR A QUANTIDADE de valor gasto.
-	
-Funcionário:
-	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
-	A carga horária do funcionário não deve ultrapassar 220 horas. [OK]
-	Um funcionário diferente de Freelancer deve ter um salário cadastrado superior a um salário mínimo. [OK]
-Mesa:
-
-Pedido:
-	Uma reserva só pode ter um pedido adicionado caso a data da reserva seja posterior ou igual a hoje e seu status seja AGENDADA (ainda não foi finalizada). [OK]
-
-
-
 -------------
 
 MELHORIAS:
@@ -87,7 +65,20 @@ MELHORIAS:
 
 OK:
 
+ENDPOINTS:
+
+    Funcionário:
+    	Listar todos [OK]
+    	Listar por id [OK]
+    	Cadastro [OK]
+    	Atualização [OK]
+    	Deleção [OK]
+
 REGRAS DE NEGOCIO:
+
+    Cliente:
+    	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
+        	ATUALIZAR A QUANTIDADE de valor gasto. [OK]
 
     Reserva:
     	Uma reserva não pode ser feita para uma data no passado. [OK]
@@ -102,3 +93,11 @@ REGRAS DE NEGOCIO:
 
     Restaurante:
     	Extrair números do cnpj e gravar sem caracteres especiais. [OK]
+
+    Pedido:
+    	Uma reserva só pode ter um pedido adicionado caso a data da reserva seja posterior ou igual a hoje e seu status seja AGENDADA (ainda não foi finalizada). [OK]
+
+    Funcionário:
+    	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
+    	A carga horária do funcionário não deve ultrapassar 220 horas. [OK]
+    	Um funcionário diferente de Freelancer deve ter um salário cadastrado superior a um salário mínimo. [OK]

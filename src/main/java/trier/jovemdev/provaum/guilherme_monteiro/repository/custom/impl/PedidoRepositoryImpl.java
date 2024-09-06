@@ -35,15 +35,15 @@ public class PedidoRepositoryImpl implements PedidoRepositoryCustom {
 
         condicoes.and(reserva.dataReserva.eq(data));
 
-        if(Objects.nonNull(valor)) {
+        if (Objects.nonNull(valor)) {
             condicoes.and(pedido.valor.loe(valor));
         }
 
-        if(Objects.nonNull(statusReserva)) {
+        if (Objects.nonNull(statusReserva)) {
             condicoes.and(pedido.reserva.status.eq(statusReserva));
         }
 
-        if(Objects.nonNull(clienteId)) {
+        if (Objects.nonNull(clienteId)) {
             condicoes.and(pedido.reserva.cliente.id.eq(clienteId));
         }
 
@@ -71,6 +71,18 @@ public class PedidoRepositoryImpl implements PedidoRepositoryCustom {
                 .join(cliente.restaurante, restaurante)
                 .where(restaurante.id.eq(idRestaurante))
                 .orderBy(pedido.id.asc());
+
+        return query.fetch();
+    }
+
+    public List<PedidoDto> findAllByIdReserva(Long idReserva) {
+        JPAQuery<PedidoDto> query = new JPAQuery<>(em);
+
+        query
+                .select(Projections.constructor(PedidoDto.class, pedido))
+                .from(pedido)
+                .join(pedido.reserva, reserva)
+                .where(reserva.id.eq(idReserva));
 
         return query.fetch();
     }

@@ -25,4 +25,5 @@ public interface PedidoService {
 
     List<PedidoDto> findAllByParameters(LocalDate data, BigDecimal valor, StatusReservaEnum statusReserva, Long clienteId) throws ClienteNaoEncontradoException;
 
+    List<PedidoDto> findAllByIdReserva(Long idReserva) throws ReservaNaoEncontradaException;
 }

@@ -13,4 +13,6 @@ public interface PedidoRepositoryCustom {
     List<PedidoDto> findAllByParameters(LocalDate data, BigDecimal valor, StatusReservaEnum statusReserva, Long clienteId);
 
     List<PedidoDto> findAllByRestaurante(Long idRestaurante);
+
+    List<PedidoDto> findAllByIdReserva(Long idReserva);
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ClienteDto;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.PedidoDto;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaTotalDto;
 import trier.jovemdev.provaum.guilherme_monteiro.entity.ReservaEntity;
@@ -50,7 +51,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         reservaDto.setCliente(clienteService.findById(reservaDto.getCliente().getId()));
 
-        if(reservaDto.getCliente().getBloqueado()){
+        if (reservaDto.getCliente().getBloqueado()) {
             throw new ClienteBloqueadoException(reservaDto.getCliente().getNome());
         }
 
@@ -88,6 +89,7 @@ public class ReservaServiceImpl implements ReservaService {
         } else if (status == StatusReservaEnum.CONCLUIDA) {
             if (LocalDate.now().isEqual(reservaDto.getDataReserva()) || LocalDate.now().isAfter(reservaDto.getDataReserva())) {
                 reservaDto.setStatus(StatusReservaEnum.CONCLUIDA);
+                clienteService.atualizaValorGastoCliente(findById(idReserva).getCliente(), reservaRepository.findById(idReserva).get().getPedidos().stream().map(PedidoDto::new).toList());
             } else {
                 throw new ConclusaoInvalidaException();
             }
@@ -127,16 +129,19 @@ public class ReservaServiceImpl implements ReservaService {
         reservasSemPedidos.forEach(reserva -> updateStatus(reserva.getId(), StatusReservaEnum.INADIMPLENTE));
 
         List<ReservaDto> reservasComPedidos = reservaRepositoryCustom.atualizarAutomaticamenteReservasParaConcluida();
-        reservasComPedidos.forEach(reserva -> updateStatus(reserva.getId(), StatusReservaEnum.CONCLUIDA));
+        reservasComPedidos.forEach(reserva -> {
+            updateStatus(reserva.getId(), StatusReservaEnum.CONCLUIDA);
+            clienteService.atualizaValorGastoCliente(findById(reserva.getId()).getCliente(), reservaRepository.findById(reserva.getId()).get().getPedidos().stream().map(PedidoDto::new).toList());
+        });
     }
 
-    private void validaDataReserva(LocalDate dataReserva) throws DataInvalidaException{
+    private void validaDataReserva(LocalDate dataReserva) throws DataInvalidaException {
         if (Objects.isNull(dataReserva) || dataReserva.isBefore(LocalDate.now())) {
             throw new DataInvalidaException(dataReserva);
         }
     }
 
-    private void validaCriacaoReserva(ClienteDto clienteDto) throws ReservaBloqueadaException{
+    private void validaCriacaoReserva(ClienteDto clienteDto) throws ReservaBloqueadaException {
         Long qtdReservasCanceladasNoMes = reservaRepositoryCustom.countReservasCanceladasNoMesByCliente(clienteDto.getId());
 
         if (qtdReservasCanceladasNoMes >= 2) {

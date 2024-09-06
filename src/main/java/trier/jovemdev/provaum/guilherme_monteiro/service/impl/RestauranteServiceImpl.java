@@ -1,22 +1,18 @@
 package trier.jovemdev.provaum.guilherme_monteiro.service.impl;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import trier.jovemdev.provaum.guilherme_monteiro.dto.RestauranteDto;
 import trier.jovemdev.provaum.guilherme_monteiro.entity.RestauranteEntity;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CnpjInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CnpjJaExistenteException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NomeInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.QtdEstrelasInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.RestauranteNaoEncontradoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ValorInvalidoEnumException;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.*;
 import trier.jovemdev.provaum.guilherme_monteiro.repository.RestauranteRepository;
+import trier.jovemdev.provaum.guilherme_monteiro.repository.custom.RestauranteRepositoryCustom;
 import trier.jovemdev.provaum.guilherme_monteiro.service.RestauranteService;
+
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class RestauranteServiceImpl implements RestauranteService {
@@ -24,9 +20,12 @@ public class RestauranteServiceImpl implements RestauranteService {
 	@Autowired
 	private RestauranteRepository repository;
 
+	@Autowired
+	private RestauranteRepositoryCustom repositoryCustom;
+
 	@Override
-	public List<RestauranteDto> findAll() {
-		return repository.findAll().stream().map(RestauranteDto::new).toList();
+	public Page<RestauranteDto> findAll(Pageable pageable, String searchTerm) {
+		return repositoryCustom.findAll(pageable, searchTerm);
 	}
 
 	@Override

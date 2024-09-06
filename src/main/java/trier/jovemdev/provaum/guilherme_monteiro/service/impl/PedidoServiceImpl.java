@@ -68,6 +68,10 @@ public class PedidoServiceImpl implements PedidoService {
         return pedidoRepositoryCustom.findAllByParameters(data, valor, statusReserva, clienteId);
     }
 
+    public List<PedidoDto> findAllByIdReserva(Long idReserva) throws ReservaNaoEncontradaException {
+        return pedidoRepositoryCustom.findAllByIdReserva(idReserva);
+    }
+
     private void validaPedido(PedidoDto pedidoDto) throws DescricaoInvalidaException, ReservaNaoEncontradaException {
         pedidoDto.setReserva(reservaService.findById(pedidoDto.getReserva().getId()));
 
