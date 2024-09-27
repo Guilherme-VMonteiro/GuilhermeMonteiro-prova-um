@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
-public class NumeroPessoasInvalidoException extends ExcessaoPersonalizada {
+public class NomeInvalidoException extends ExcessaoPersonalizada {
 
 	private static final long serialVersionUID = 1L;
 
-	public NumeroPessoasInvalidoException(int numeroPessoas) {
-		super(String.format("Número de pessoas: %s inválido. (1-10)", numeroPessoas));
+	public NomeInvalidoException() {
+		super("Nome inválido.");
 	}
 }

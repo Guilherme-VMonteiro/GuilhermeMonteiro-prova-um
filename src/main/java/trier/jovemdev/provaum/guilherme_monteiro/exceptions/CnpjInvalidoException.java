@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
-public class ClienteInexistenteException extends ExcessaoPersonalizada{
+public class CnpjInvalidoException extends ExcessaoPersonalizada {
 
 	private static final long serialVersionUID = 1L;
-	
-	public ClienteInexistenteException(Long id) {
-		super(String.format("Cliente com o id: %s não encontrado.", id));
+
+	public CnpjInvalidoException(String cnpj) {
+		super(String.format("CNPJ: %s inválido.", cnpj));
 	}
 }

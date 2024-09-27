@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
-public class ReservaInexistenteException extends ExcessaoPersonalizada{
+public class CnpjJaExistenteException extends ExcessaoPersonalizada {
 
 	private static final long serialVersionUID = 1L;
-	
-	public ReservaInexistenteException(Long id) {
-		super(String.format("Reserva com o id: %s não encontrada.", id));
+
+	public CnpjJaExistenteException(String cnpj) {
+		super(String.format("Restaurante com o CNPJ: %s já cadastrado.", cnpj));
 	}
 }

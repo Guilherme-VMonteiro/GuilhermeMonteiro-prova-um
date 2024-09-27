@@ -1,0 +1,103 @@
+ENTIDADES:
+
+- Cliente
+- Funcionário
+- Mesa
+- Pedido
+- Reserva
+- Restaurante
+
+ENDPOINTS:
+
+Cliente:
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+	Buscar clientes com mais reservas concluídas. [OK]
+	Buscar clientes com maior valor gasto. [OK]
+	Fazer busca paginada de clientes com busca por nome, trazendo numero de reservas concluídas e o total gasto com o restaurante.
+	Listar todos os clientes com seu maior pedido.
+	Fazer endpoint para desbloquear cliente (Pagou a taxa). [OK]
+
+Mesa:	
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+	Buscar mesas disponíveis (não canceladas) por data e quantidade de pessoas.
+Pedido:
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+	Busca pedidos por data, valor, status e cliente (parâmetros opcionais) ordenados por valor desc. [OK]
+Reserva:
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+	Alterar status da Reserva [OK]
+	Buscar total por reservas. [OK]
+	Pesquisar pela observação na reserva. [OK]
+Restaurante:
+	Listar todos [OK]
+	Listar por id [OK]
+	Cadastro [OK]
+	Atualização [OK]
+	Deleção [OK]
+	Buscar faturamento do dia por restaurante
+	Buscar o dia com mais faturamento do mês por restaurante. ( retorna data e dia da semana)
+	Fazer busca de restaurantes e pedidos paginados (busca deve conter filtro por nome).
+
+-------------
+
+MELHORIAS:
+	ABSTRAIR PARA CODIGO REUTILIZAVEL A VERIFICACAO DOS ENUMS
+	ABSTRAIR PARA CODIGO REUTILIZAVEL A VALIDACAO DA IDADE DE CLIENTE E FUNCIONARIO
+	SOMENTE CONSEGUIR MUDAR O STATUS PARA INADIMPLENTE APOS O DIA DA RESERVA
+	MELHORAR AS EXCESSOES(REDUZIR O NUMERO EXORBITANTE DE CLASSES)
+	OBJETOS MUITO GRANDES SENDO RETORNADOS NAS REQUESTS
+
+OK:
+
+ENDPOINTS:
+
+    Funcionário:
+    	Listar todos [OK]
+    	Listar por id [OK]
+    	Cadastro [OK]
+    	Atualização [OK]
+    	Deleção [OK]
+
+REGRAS DE NEGOCIO:
+
+    Cliente:
+    	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
+        	ATUALIZAR A QUANTIDADE de valor gasto. [OK]
+
+    Reserva:
+    	Uma reserva não pode ser feita para uma data no passado. [OK]
+    	Fazer controle para se o cliente tiver cancelado 2 reservas no último mês ele não poder criar uma nova reserva. [OK]
+    	Fazer bloqueio do cliente caso tenha 3 inadimplências (flg_bloqueado). [OK]
+    	Uma reserva só pode ser cancelada com 1 dia de antecedência. [OK]
+    	Uma reserva só pode ser concluída no dia mesmo dia ou posterior. [OK]
+
+    	O sistema deve possuir um agendamento que roda todo dia as 6 da manhã que concluída reservas sem status preenchidos
+    	com observação padrão “Reserva finalizada automaticamente pelo sistema”. Preencher como concluida quando existirem pedidos
+    	para a reserva. Preencher como inadimplente quando não existirem. [OK]
+
+    Restaurante:
+    	Extrair números do cnpj e gravar sem caracteres especiais. [OK]
+
+    Pedido:
+    	Uma reserva só pode ter um pedido adicionado caso a data da reserva seja posterior ou igual a hoje e seu status seja AGENDADA (ainda não foi finalizada). [OK]
+
+    Funcionário:
+    	Uma pessoa não pode ter data de nascimento em que sua idade fique maior que 100 anos ou menor que 12. [OK]
+    	A carga horária do funcionário não deve ultrapassar 220 horas. [OK]
+    	Um funcionário diferente de Freelancer deve ter um salário cadastrado superior a um salário mínimo. [OK]

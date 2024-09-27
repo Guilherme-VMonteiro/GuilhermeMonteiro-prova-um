@@ -1,68 +1,68 @@
 package trier.jovemdev.provaum.guilherme_monteiro.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ClienteInexistenteException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ExcessaoPersonalizada;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaTotalDto;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.UpdateStatusDto;
 import trier.jovemdev.provaum.guilherme_monteiro.service.ReservaService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reserva")
 public class ReservaController {
 
-	@Autowired
-	private ReservaService service;
+    @Autowired
+    private ReservaService reservaService;
 
-	@GetMapping
-	public List<ReservaDto> findAll() {
-		return service.findAll();
-	}
+    @GetMapping
+    public List<ReservaDto> findAll(){
+        return reservaService.findAll();
+    }
 
-	@GetMapping("/cliente/{clienteId}")
-	public ResponseEntity<?> findAllByCliente(@PathVariable Long clienteId) {
-		try {
-			return ResponseEntity.ok(service.findAllByCliente(clienteId));
-		} catch (ClienteInexistenteException e) {
-			return ResponseEntity.badRequest().body(e.getErrorMessage());
-		}
-	}
+    @GetMapping("/restaurante/{id}")
+    public List<ReservaDto> findAllByRestaurante(@PathVariable Long id){
+        return reservaService.findAllByRestaurante(id);
+    }
 
-	@GetMapping("/disponibilidade")
-	public ResponseEntity<?> findDisponibility(@RequestBody ReservaDto reservaDto) {
-		try {
-			service.findDisponibility(reservaDto.getNumeroMesa(), reservaDto.getDataReserva());
-			return ResponseEntity.ok(null);
-		} catch (ExcessaoPersonalizada e) {
-			return ResponseEntity.badRequest().body(e.getErrorMessage());
-		}
-	}
+    @GetMapping("/{id}")
+    public ReservaDto findById(@PathVariable Long id){
+        return reservaService.findById(id);
+    }
 
-	@PostMapping
-	public ResponseEntity<?> create(@RequestBody ReservaDto reservaDto) {
-		try {
-			return ResponseEntity.ok(service.create(reservaDto));
-		} catch (ExcessaoPersonalizada e) {
-			return ResponseEntity.badRequest().body(e.getErrorMessage());
-		}
-	}
+    @PostMapping
+    public ReservaDto create(@RequestBody ReservaDto reservaDto){
+        return reservaService.create(reservaDto);
+    }
 
-	@PutMapping
-	public ResponseEntity<?> updateStatus(@RequestBody ReservaDto reservaDto) {
-		try {
-			return ResponseEntity.ok(service.updateStatus(reservaDto.getId(), reservaDto.getStatus()));
-		} catch (ExcessaoPersonalizada e) {
-			return ResponseEntity.badRequest().body(e.getErrorMessage());
-		}
-	}
+    @PutMapping
+    public ReservaDto update(@RequestBody ReservaDto reservaDto){
+        return reservaService.update(reservaDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        reservaService.delete(id);
+    }
+
+    @PutMapping("/status")
+    public ReservaDto updateStatus(@RequestBody UpdateStatusDto updateStatusDto){
+        return reservaService.updateStatus(updateStatusDto.getIdReserva(), updateStatusDto.getStatus());
+    }
+
+    @GetMapping("/restaurante/{id}/total")
+    public List<ReservaTotalDto> findAllReservasTotalByRestaurante(@PathVariable Long id){
+        return reservaService.findAllReservasTotalByRestaurante(id);
+    }
+
+    @GetMapping("/restaurante/total")
+    public List<ReservaTotalDto> findAllReservasTotal(){
+        return reservaService.findAllReservasTotal();
+    }
+
+    @GetMapping("/observacao/{observacao}")
+    public List<ReservaDto> findByObservacao(@PathVariable String observacao){
+        return reservaService.findByObservacao(observacao);
+    }
 }

@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
-public class EmailExistenteException extends ExcessaoPersonalizada{
+public class QtdEstrelasInvalidoException extends ExcessaoPersonalizada {
 
 	private static final long serialVersionUID = 1L;
-	
-	public EmailExistenteException(String email) {
-		super(String.format("Cliente com o email: %s já existente.", email));
+
+	public QtdEstrelasInvalidoException() {
+		super("Quantidade de estrelas inválido. Valores de 0 a 3");
 	}
 }

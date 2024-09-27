@@ -1,127 +1,151 @@
 package trier.jovemdev.provaum.guilherme_monteiro.service.impl;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ClienteDto;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.PedidoDto;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
-import trier.jovemdev.provaum.guilherme_monteiro.entity.ClienteEntity;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaTotalDto;
 import trier.jovemdev.provaum.guilherme_monteiro.entity.ReservaEntity;
-import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReserva;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CancelamentoInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ClienteInexistenteException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ConclusaoInvalidaException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.DataInvalidaException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.MesaReservadaException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NumeroMesaInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NumeroPessoasInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ReservaInexistenteException;
+import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReservaEnum;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.*;
 import trier.jovemdev.provaum.guilherme_monteiro.repository.ReservaRepository;
+import trier.jovemdev.provaum.guilherme_monteiro.repository.custom.ReservaRepositoryCustom;
 import trier.jovemdev.provaum.guilherme_monteiro.service.ClienteService;
+import trier.jovemdev.provaum.guilherme_monteiro.service.MesaService;
 import trier.jovemdev.provaum.guilherme_monteiro.service.ReservaService;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservaServiceImpl implements ReservaService {
 
-	@Autowired
-	private ReservaRepository repository;
+    @Autowired
+    private ReservaRepository reservaRepository;
 
-	@Autowired
-	private ClienteService clienteService;
+    @Autowired
+    private ReservaRepositoryCustom reservaRepositoryCustom;
 
-	public List<ReservaDto> findAll() {
-		return repository.findAll().stream().map(ReservaDto::new).toList();
-	}
+    @Autowired
+    private ClienteService clienteService;
 
-	public ReservaDto create(ReservaDto reservaDto) throws ClienteInexistenteException, DataInvalidaException,
-			NumeroPessoasInvalidoException, MesaReservadaException {
+    @Autowired
+    private MesaService mesaService;
 
-		ClienteEntity cliente = new ClienteEntity(clienteService.findById(reservaDto.getCliente().getId())
-				.orElseThrow(() -> new ClienteInexistenteException(reservaDto.getCliente().getId())));
+    public List<ReservaDto> findAll() {
+        return reservaRepository.findAll().stream().map(ReservaDto::new).toList();
+    }
 
-		validaReserva(reservaDto);
+    public List<ReservaDto> findAllByRestaurante(Long idRestaurante) throws RestauranteNaoEncontradoException {
+        return reservaRepositoryCustom.findAllByRestauranteId(idRestaurante).stream().map(ReservaDto::new).toList();
+    }
 
-		reservaDto.setStatus(StatusReserva.FEITA);
-		reservaDto.setCliente(new ClienteDto(cliente));
+    public ReservaDto findById(Long id) throws ReservaNaoEncontradaException {
+        return new ReservaDto(reservaRepository.findById(id).orElseThrow(() -> new ReservaNaoEncontradaException(id)));
+    }
 
-		ReservaEntity reserva = new ReservaEntity(reservaDto);
+    public ReservaDto create(ReservaDto reservaDto) throws ClienteNaoEncontradoException, MesaNaoEncontradaException, DataInvalidaException, ReservaBloqueadaException, ClienteBloqueadoException {
 
-		return new ReservaDto(repository.save(reserva));
-	}
+        reservaDto.setCliente(clienteService.findById(reservaDto.getCliente().getId()));
 
-	public List<ReservaDto> findAllByCliente(Long clienteId) throws ClienteInexistenteException{
-		ClienteEntity cliente = new ClienteEntity(
-				clienteService.findById(clienteId).orElseThrow(() -> new ClienteInexistenteException(clienteId)));
-		return repository.findAllByCliente(cliente).stream().map(ReservaDto::new).toList();
-	}
+        if (reservaDto.getCliente().getBloqueado()) {
+            throw new ClienteBloqueadoException(reservaDto.getCliente().getNome());
+        }
 
-	public void findDisponibility(Integer numeroMesa, LocalDate dataReserva)
-			throws DataInvalidaException, MesaReservadaException, NumeroMesaInvalidoException {
-		validaDataReserva(dataReserva);
-		validaMesa(numeroMesa, dataReserva);
-	}
+        reservaDto.setStatus(StatusReservaEnum.AGENDADA);
+        validaDataReserva(reservaDto.getDataReserva());
+        reservaDto.setMesa(mesaService.findById(reservaDto.getMesa().getId()));
 
-	public ReservaDto updateStatus(Long idReserva, StatusReserva status)
-			throws ReservaInexistenteException, CancelamentoInvalidoException, ConclusaoInvalidaException {
+        validaCriacaoReserva(reservaDto.getCliente());
 
-		Optional<ReservaEntity> reservaOptional = repository.findById(idReserva);
+        return new ReservaDto(reservaRepository.save(new ReservaEntity(reservaDto)));
+    }
 
-		if (reservaOptional.isEmpty()) {
-			throw new ReservaInexistenteException(idReserva);
-		}
+    public ReservaDto update(ReservaDto reservaDto) throws ClienteNaoEncontradoException, MesaNaoEncontradaException, DataInvalidaException, ConclusaoInvalidaException, CancelamentoInvalidoException {
 
-		if (status.equals(StatusReserva.CANCELADA)) {
-			validaCancelamento(reservaOptional.get().getDataReserva());
-		}
-		
-		if (status.equals(StatusReserva.CONCLUIDA)) {
-			validaConcluida(reservaOptional.get().getDataReserva());
-		}
+        validaDataReserva(reservaDto.getDataReserva());
+        reservaDto.setCliente(clienteService.findById(reservaDto.getCliente().getId()));
+        reservaDto.setMesa(mesaService.findById(reservaDto.getMesa().getId()));
 
-		reservaOptional.get().atualizarStatus(status);
+        ReservaEntity reservaEntity = new ReservaEntity(findById(reservaDto.getId()));
+        reservaEntity.atualizaCampos(reservaDto);
 
-		return new ReservaDto(repository.save(reservaOptional.get()));
-	}
+        return new ReservaDto(reservaRepository.save(reservaEntity));
+    }
 
-	private void validaReserva(ReservaDto reserva) throws DataInvalidaException, NumeroPessoasInvalidoException,
-			NumeroMesaInvalidoException, MesaReservadaException {
-		validaDataReserva(reserva.getDataReserva());
-		if (reserva.getNumeroPessoas() > 10 || reserva.getNumeroPessoas() < 1) {
-			throw new NumeroPessoasInvalidoException(reserva.getNumeroPessoas());
-		}
-		validaMesa(reserva.getNumeroMesa(), reserva.getDataReserva());
-	}
+    public void delete(Long id) throws ReservaNaoEncontradaException {
+        reservaRepository.delete(new ReservaEntity(findById(id)));
+    }
 
-	private void validaMesa(Integer numeroMesa, LocalDate dataReserva)
-			throws MesaReservadaException, NumeroMesaInvalidoException {
+    public ReservaDto updateStatus(Long idReserva, StatusReservaEnum status) throws ReservaNaoEncontradaException, ConclusaoInvalidaException, CancelamentoInvalidoException {
 
-		if (numeroMesa > 20 || numeroMesa < 1) {
-			throw new NumeroMesaInvalidoException(numeroMesa);
-		} else if (repository.findByNumeroMesaAndDataReservaAndStatus(numeroMesa, dataReserva, StatusReserva.FEITA)
-				.isPresent()) {
-			throw new MesaReservadaException(numeroMesa, dataReserva);
-		}
-	}
+        ReservaDto reservaDto = findById(idReserva);
 
-	private void validaDataReserva(LocalDate dataReseva) throws DataInvalidaException {
-		if (dataReseva.isBefore(LocalDate.now())) {
-			throw new DataInvalidaException(dataReseva);
-		}
-	}
+        if (status == StatusReservaEnum.AGENDADA) {
+            reservaDto.setStatus(status);
+        } else if (status == StatusReservaEnum.CONCLUIDA) {
+            if (LocalDate.now().isEqual(reservaDto.getDataReserva()) || LocalDate.now().isAfter(reservaDto.getDataReserva())) {
+                reservaDto.setStatus(StatusReservaEnum.CONCLUIDA);
+                clienteService.atualizaValorGastoCliente(findById(idReserva).getCliente(), reservaRepository.findById(idReserva).get().getPedidos().stream().map(PedidoDto::new).toList());
+            } else {
+                throw new ConclusaoInvalidaException();
+            }
+        } else if (status == StatusReservaEnum.INADIMPLENTE) {
+            Long qtdInadimplencias = reservaRepositoryCustom.countInadimplenciasByCliente(reservaDto.getCliente().getId());
 
-	private void validaCancelamento(LocalDate dataReserva) throws CancelamentoInvalidoException {
-		if (dataReserva.isBefore(LocalDate.now()) || dataReserva.isEqual(LocalDate.now())) {
-			throw new CancelamentoInvalidoException();
-		}
-	}
-	
-	private void validaConcluida(LocalDate dataReserva) throws ConclusaoInvalidaException {
-		if (dataReserva.isBefore(LocalDate.now())) {
-			throw new ConclusaoInvalidaException();
-		}
-	}
+            if (qtdInadimplencias >= 2) {
+                clienteService.switchBlockClienteFlag(reservaDto.getCliente().getId());
+            }
+            reservaDto.setStatus(StatusReservaEnum.INADIMPLENTE);
+        } else if (status == StatusReservaEnum.CANCELADA) {
+            if (reservaDto.getDataReserva().isAfter(LocalDate.now())) {
+                reservaDto.setStatus(StatusReservaEnum.CANCELADA);
+            } else {
+                throw new CancelamentoInvalidoException();
+            }
+        }
+
+        return new ReservaDto(reservaRepository.save(new ReservaEntity(reservaDto)));
+    }
+
+    public List<ReservaTotalDto> findAllReservasTotalByRestaurante(Long idRestaurante) throws RestauranteNaoEncontradoException {
+        return List.of();
+    }
+
+    public List<ReservaTotalDto> findAllReservasTotal() {
+        return reservaRepositoryCustom.findAllReservasTotal().stream().map(ReservaTotalDto::new).toList();
+    }
+
+    public List<ReservaDto> findByObservacao(String observacao) {
+        return reservaRepositoryCustom.findByObervacao(observacao).stream().map(ReservaDto::new).toList();
+    }
+
+    @Transactional
+    public void concluirReservasNaoFinalizadas() {
+        List<ReservaDto> reservasSemPedidos = reservaRepositoryCustom.atualizarAutomaticamenteReservasParaInadimplente();
+        reservasSemPedidos.forEach(reserva -> updateStatus(reserva.getId(), StatusReservaEnum.INADIMPLENTE));
+
+        List<ReservaDto> reservasComPedidos = reservaRepositoryCustom.atualizarAutomaticamenteReservasParaConcluida();
+        reservasComPedidos.forEach(reserva -> {
+            updateStatus(reserva.getId(), StatusReservaEnum.CONCLUIDA);
+            clienteService.atualizaValorGastoCliente(findById(reserva.getId()).getCliente(), reservaRepository.findById(reserva.getId()).get().getPedidos().stream().map(PedidoDto::new).toList());
+        });
+    }
+
+    private void validaDataReserva(LocalDate dataReserva) throws DataInvalidaException {
+        if (Objects.isNull(dataReserva) || dataReserva.isBefore(LocalDate.now())) {
+            throw new DataInvalidaException(dataReserva);
+        }
+    }
+
+    private void validaCriacaoReserva(ClienteDto clienteDto) throws ReservaBloqueadaException {
+        Long qtdReservasCanceladasNoMes = reservaRepositoryCustom.countReservasCanceladasNoMesByCliente(clienteDto.getId());
+
+        if (qtdReservasCanceladasNoMes >= 2) {
+            throw new ReservaBloqueadaException(clienteDto.getNome(), LocalDate.now().minusDays(LocalDate.now().getDayOfMonth() - 1).plusMonths(1));
+        }
+    }
 }

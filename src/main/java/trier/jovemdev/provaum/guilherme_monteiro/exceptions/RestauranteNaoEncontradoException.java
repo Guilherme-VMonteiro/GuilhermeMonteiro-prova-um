@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
-public class NumeroMesaInvalidoException extends ExcessaoPersonalizada {
+public class RestauranteNaoEncontradoException extends ExcessaoPersonalizada {
 
 	private static final long serialVersionUID = 1L;
 
-	public NumeroMesaInvalidoException(int numeroMesa) {
-		super(String.format("Número de mesa: %s inválido. (1-20)", numeroMesa));
+	public RestauranteNaoEncontradoException(Long id) {
+		super(String.format("Restaurante id: %s não encontrado.", id));
 	}
 }

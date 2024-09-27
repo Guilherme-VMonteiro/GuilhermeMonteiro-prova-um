@@ -1,30 +1,35 @@
 package trier.jovemdev.provaum.guilherme_monteiro.service;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaDto;
-import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReserva;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.CancelamentoInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ClienteInexistenteException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ConclusaoInvalidaException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.DataInvalidaException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.MesaReservadaException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NumeroMesaInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.NumeroPessoasInvalidoException;
-import trier.jovemdev.provaum.guilherme_monteiro.exceptions.ReservaInexistenteException;
+import trier.jovemdev.provaum.guilherme_monteiro.dto.ReservaTotalDto;
+import trier.jovemdev.provaum.guilherme_monteiro.enums.StatusReservaEnum;
+import trier.jovemdev.provaum.guilherme_monteiro.exceptions.*;
+
+import java.util.List;
 
 public interface ReservaService {
 
-	List<ReservaDto> findAll();
+    List<ReservaDto> findAll();
 
-	ReservaDto create(ReservaDto reservaDto) throws ClienteInexistenteException, DataInvalidaException,
-			NumeroPessoasInvalidoException, MesaReservadaException, NumeroMesaInvalidoException;
+    List<ReservaDto> findAllByRestaurante(Long idRestaurante) throws RestauranteNaoEncontradoException;
 
-	List<ReservaDto> findAllByCliente(Long clienteId) throws ClienteInexistenteException;
+    ReservaDto findById(Long id) throws ReservaNaoEncontradaException;
 
-	void findDisponibility(Integer numeroMesa, LocalDate dataReserva)
-			throws DataInvalidaException, MesaReservadaException, NumeroMesaInvalidoException;
+    ReservaDto create(ReservaDto reservaDto) throws ClienteNaoEncontradoException, MesaNaoEncontradaException, DataInvalidaException, ReservaBloqueadaException, ClienteBloqueadoException;
 
-	ReservaDto updateStatus(Long idReserva, StatusReserva status) throws ReservaInexistenteException, CancelamentoInvalidoException, ConclusaoInvalidaException;
+    ReservaDto update(ReservaDto reservaDto) throws ClienteNaoEncontradoException, MesaNaoEncontradaException, DataInvalidaException, ConclusaoInvalidaException, CancelamentoInvalidoException;
+
+    void delete(Long id) throws ReservaNaoEncontradaException;
+
+    ReservaDto updateStatus(Long idReserva, StatusReservaEnum status) throws ReservaNaoEncontradaException, ConclusaoInvalidaException, CancelamentoInvalidoException;
+
+    List<ReservaTotalDto> findAllReservasTotalByRestaurante(Long idRestaurante) throws RestauranteNaoEncontradoException;
+
+    List<ReservaTotalDto> findAllReservasTotal();
+
+    List<ReservaDto> findByObservacao(String observacao);
+
+    void concluirReservasNaoFinalizadas();
+
+
 }
