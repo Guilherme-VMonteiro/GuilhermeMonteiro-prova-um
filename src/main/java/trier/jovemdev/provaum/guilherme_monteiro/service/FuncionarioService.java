@@ -12,7 +12,9 @@ import trier.jovemdev.provaum.guilherme_monteiro.exceptions.SalarioInvalidoExcep
 public interface FuncionarioService {
 	
 	List<FuncionarioDto> findAll();
-	
+
+	List<FuncionarioDto> findAllByRestauranteId(Long restauranteId);
+
 	FuncionarioDto findById(Long id) throws FuncionarioNaoEncontradoException;
 	
 	FuncionarioDto create(FuncionarioDto funcionarioDto) throws DataDeNascimentoInvalidaException, CargaHorariaInvalidaException, SalarioInvalidoException, RestauranteNaoEncontradoException;
