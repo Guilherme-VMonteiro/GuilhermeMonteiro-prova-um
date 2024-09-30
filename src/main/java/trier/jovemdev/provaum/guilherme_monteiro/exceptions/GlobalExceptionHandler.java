@@ -117,4 +117,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorMessage> handlePedidoNaoEncontradoException(PedidoNaoEncontradoException e) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorMessage());
 	}
+
+	@ExceptionHandler(AutenticacaoJwTInvalidaException.class)
+	public ResponseEntity<ErrorMessage> handleAutenticacaoJwTInvalidaException(AutenticacaoJwTInvalidaException e) {
+
+		ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMessage);
+	}
 }

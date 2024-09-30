@@ -11,9 +11,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import trier.jovemdev.provaum.guilherme_monteiro.dto.RestauranteDto;
 import trier.jovemdev.provaum.guilherme_monteiro.entity.QRestauranteEntity;
+import trier.jovemdev.provaum.guilherme_monteiro.entity.RestauranteEntity;
 import trier.jovemdev.provaum.guilherme_monteiro.repository.custom.RestauranteRepositoryCustom;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class RestauranteRepositoryCustomImpl implements RestauranteRepositoryCustom {
@@ -26,7 +28,7 @@ public class RestauranteRepositoryCustomImpl implements RestauranteRepositoryCus
     public Page<RestauranteDto> findAll(Pageable pageable, String searchTerm) {
         BooleanBuilder condicoes = new BooleanBuilder();
 
-        if(Objects.nonNull(searchTerm) && !searchTerm.isEmpty()) {
+        if (Objects.nonNull(searchTerm) && !searchTerm.isEmpty()) {
             condicoes.and(restaurante.nome.containsIgnoreCase(searchTerm));
         }
 
@@ -42,5 +44,16 @@ public class RestauranteRepositoryCustomImpl implements RestauranteRepositoryCus
         query.offset(pageable.getOffset());
 
         return new PageImpl<>(query.fetch(), pageable, query.fetchCount());
+    }
+
+    public Optional<RestauranteEntity> findByEmail(String email) {
+        JPAQuery<RestauranteEntity> query = new JPAQuery<>(em);
+
+        query
+                .select(restaurante)
+                .from(restaurante)
+                .where(restaurante.email.eq(email));
+
+        return Optional.ofNullable(query.fetchOne());
     }
 }
